@@ -1,4 +1,5 @@
 import express from 'express';
+import router from './routes/userRoutes';
 
 class App {
   app: express.Application;
@@ -11,7 +12,9 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
   }
-  routes() {}
+  routes() {
+    this.app.use('/', router);
+  }
 }
 
 export default new App().app;
