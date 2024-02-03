@@ -18,3 +18,12 @@ model User {
   password String
   amount Float @default(0)
 }
+
+model Merchant {
+  id String @id @default(uuid())
+  fullName String
+  cnpj String @unique
+  email String @unique
+  password String
+  amount Float @default(0)
+}
