@@ -4,5 +4,5 @@ export interface IMerchant {
     fullName: String;
     email: String;
     password: String;
-    balance: Number;
+    amount: Number;
 }
