@@ -1,8 +1,8 @@
 export interface IMerchant {
-    id: String;
-    cnpj: String;
-    fullName: String;
-    email: String;
-    password: String;
-    amount: Number;
+  id: string;
+  cnpj: string;
+  fullName: string;
+  email: string;
+  password: string;
+  amount: number;
 }
