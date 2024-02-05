@@ -1,5 +1,6 @@
 import express from 'express';
 import router from './routes/userRoutes';
+require('dotenv').config();
 
 class App {
   app: express.Application;
