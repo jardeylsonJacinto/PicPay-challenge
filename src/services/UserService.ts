@@ -12,3 +12,10 @@ export const registerUser = async (user: IUser) => {
   });
   return newUser;
 };
+
+export const findAllUsers = async () => {
+  const users = await prisma.user.findMany({
+    include: { Transaction: true },
+  });
+  return users;
+};
