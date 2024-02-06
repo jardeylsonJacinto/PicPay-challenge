@@ -1,5 +1,8 @@
+import bodyParser from 'body-parser';
 import express from 'express';
-import router from './routes/userRoutes';
+import merchantRoutes from './routes/merchantRoutes';
+import userRoutes from './routes/userRoutes';
+
 require('dotenv').config();
 
 class App {
@@ -10,11 +13,12 @@ class App {
     this.routes();
   }
   middlewares() {
-    this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(express.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(bodyParser.json());
   }
   routes() {
-    this.app.use('/', router);
+    this.app.use('/user', userRoutes);
+    this.app.use('/merchant', merchantRoutes);
   }
 }
 

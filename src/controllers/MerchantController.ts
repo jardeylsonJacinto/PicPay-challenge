@@ -1,38 +1,37 @@
 import { Request, Response } from 'express';
 import { MissingParamError } from '../errors/missing-param-error';
 import { badRequest } from '../helpers/http-helper';
-import { IUser } from '../models/User';
-import { findAllUsers, registerUser } from '../services/UserService';
+import { IMerchant } from '../models/Merchant';
+import { findAllMerchant, registerMerchant } from '../services/MerchantService';
 
 class UserController {
   async index(req: Request, res: Response) {
-    const users = await findAllUsers();
-    return res.json(users);
+    const merchants = await findAllMerchant();
+    return res.json(merchants);
   }
-
   async store(req: Request, res: Response) {
-    const requiredFields = ['fullName', 'cpf', 'email', 'password'];
+    const requiredFields = ['fullName', 'cnpj', 'email', 'password'];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res.send(badRequest(new MissingParamError(field)));
       }
     }
-    const { fullName, cpf, email, password } = req.body;
-    const user: IUser = { fullName, cpf, email, password };
+    const { fullName, cnpj, email, password } = req.body;
+    const merchant: IMerchant = { fullName, cnpj, email, password };
 
     try {
-      const newUser = await registerUser(user);
-      return res.status(200).json(newUser);
+      const newMerchant = await registerMerchant(merchant);
+      return res.status(200).json(newMerchant);
     } catch (error) {
       if (error instanceof Error) {
         if (
           error.message.includes(
-            'Unique constraint failed on the fields: (`cpf`)'
+            'Unique constraint failed on the fields: (`cnpj`)'
           )
         ) {
           return res.json({
             status: 'error',
-            message: 'CPF já está em uso.',
+            message: 'cnpj já está em uso.',
           });
         }
         if (
