@@ -3,5 +3,5 @@ export interface IMerchant {
   fullName: string;
   email: string;
   password: string;
-  amount?: number;
+  amount: number;
 }
