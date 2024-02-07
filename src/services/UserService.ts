@@ -8,6 +8,7 @@ export const registerUser = async (user: IUser) => {
       cpf: user.cpf,
       email: user.email,
       password: user.password,
+      amount: user.amount,
     },
   });
   return newUser;
