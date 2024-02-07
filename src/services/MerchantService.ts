@@ -2,17 +2,18 @@ import prisma from '../config/prisma';
 import { IMerchant } from '../models/Merchant';
 
 export const findAllMerchant = async () => {
-  const users = await prisma.merchant.findMany();
-  return users;
+  const merchants = await prisma.merchant.findMany();
+  return merchants;
 };
 
-export const registerMerchant = async (user: IMerchant) => {
+export const registerMerchant = async (merchant: IMerchant) => {
   const newMerchant = await prisma.merchant.create({
     data: {
-      fullName: user.fullName,
-      cnpj: user.cnpj,
-      email: user.email,
-      password: user.password,
+      fullName: merchant.fullName,
+      cnpj: merchant.cnpj,
+      email: merchant.email,
+      password: merchant.password,
+      amount: merchant.amount,
     },
   });
   return newMerchant;
