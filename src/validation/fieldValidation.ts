@@ -18,17 +18,17 @@ export const userFieldValidation = (req: Request, res: Response) => {
   }
 };
 
-export const merchantField = (req: Request) => {
+export const merchantFieldValidation = (req: Request, res: Response) => {
   const requiredFields = ['fullName', 'cnpj', 'email', 'password', 'amount'];
   for (const field of requiredFields) {
     if (field === 'amount') {
       if (req.body[field] === undefined) {
-        return field;
+        return res.send(badRequest(new MissingParamError(field)));
       }
-      return false;
+      break;
     }
     if (!req.body[field]) {
-      return field;
+      return res.send(badRequest(new MissingParamError(field)));
     }
   }
 };

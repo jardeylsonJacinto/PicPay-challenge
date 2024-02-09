@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { InvalidParamError } from '../errors/invalid-param-error';
-import { MissingParamError } from '../errors/missing-param-error';
 import { badRequest } from '../helpers/http-helper';
 import { IMerchant } from '../models/Merchant';
 import { findAllMerchant, registerMerchant } from '../services/MerchantService';
-import { merchantField } from '../validation/fieldValidation';
-import { merchantValidation } from '../validation/paramValidation';
+import { merchantFieldValidation } from '../validation/fieldValidation';
+import { merchantParamValidation } from '../validation/paramValidation';
 
 class UserController {
   async index(res: Response) {
@@ -14,18 +13,14 @@ class UserController {
     return res.json(merchants);
   }
   async store(req: Request, res: Response) {
-    const isParamValid = merchantValidation();
-    const isFieldValid = merchantField(req);
+    merchantFieldValidation(req, res);
 
-    if (isFieldValid) {
-      return res.send(badRequest(new MissingParamError(isFieldValid)));
-    }
+    const { fullName, cnpj, email, password, amount } =
+      merchantParamValidation().parse(req.body);
+      
+    const merchant: IMerchant = { fullName, cnpj, email, password, amount };
 
     try {
-      const { fullName, cnpj, email, password, amount } = isParamValid.parse(
-        req.body
-      );
-      const merchant: IMerchant = { fullName, cnpj, email, password, amount };
       const newMerchant = await registerMerchant(merchant);
       return res.status(201).json(newMerchant);
     } catch (error) {

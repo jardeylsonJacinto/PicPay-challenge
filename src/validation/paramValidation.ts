@@ -22,7 +22,7 @@ export const userParamValidation = () => {
   });
 };
 
-export const merchantValidation = () => {
+export const merchantParamValidation = () => {
   return z.object({
     fullName: z.string({
       invalid_type_error: 'The full name has to be a string',
