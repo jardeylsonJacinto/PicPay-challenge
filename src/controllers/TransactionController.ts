@@ -1,25 +1,24 @@
 import { Request, Response } from 'express';
-import { MissingParamError } from '../errors/missing-param-error';
-import { badRequest } from '../helpers/http-helper';
 import { ITransaction } from '../models/Transaction';
 import {
   createTransaction,
   findAllTransactions,
 } from '../services/TransactionService';
+import { transactionFieldValidation } from '../validation/field';
+import {
+  transactionParamsValidation,
+  transactionValidation,
+} from '../validation/validationParams';
 
 class TransactionController {
-  async index(req: Request, res: Response) {
+  async index(res: Response) {
     const transactions = await findAllTransactions();
     return res.json(transactions);
   }
   async store(req: Request, res: Response) {
-    const requiredFields = ['userId', 'value', 'payerId', 'payeeId'];
-    for (const field of requiredFields) {
-      if (!req.body[field]) {
-        return res.send(badRequest(new MissingParamError(field)));
-      }
-    }
-    const { userId, value, payerId, payeeId } = req.body;
+    transactionFieldValidation(req, res);
+    const { userId } = transactionParamsValidation().parse(req.params);
+    const { value, payerId, payeeId } = transactionValidation().parse(req.body);
     const transaction: ITransaction = {
       userId,
       value,
