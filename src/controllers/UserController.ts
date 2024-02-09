@@ -5,7 +5,7 @@ import { badRequest } from '../helpers/http-helper';
 import { IUser } from '../models/User';
 import { findAllUsers, registerUser } from '../services/UserService';
 import { userFieldValidation } from '../validation/fieldValidation';
-import { userValidation } from '../validation/paramValidation';
+import { userParamValidation } from '../validation/paramValidation';
 
 class UserController {
   async index(res: Response) {
@@ -15,13 +15,15 @@ class UserController {
 
   async store(req: Request, res: Response) {
     userFieldValidation(req, res);
-    const { fullName, cpf, email, password, amount } = userValidation().parse(
-      req.body
-    );
+
+    const { fullName, cpf, email, password, amount } =
+      userParamValidation().parse(req.body);
+
     const user: IUser = { fullName, cpf, email, password, amount };
+
     try {
       const newUser = await registerUser(user);
-      return res.status(200).json(newUser);
+      return res.status(201).json(newUser);
     } catch (error) {
       if (error instanceof Error) {
         if (
