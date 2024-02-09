@@ -1,26 +1,21 @@
 import { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { InvalidParamError } from '../errors/invalid-param-error';
-import { MissingParamError } from '../errors/missing-param-error';
 import { badRequest } from '../helpers/http-helper';
 import { IUser } from '../models/User';
 import { findAllUsers, registerUser } from '../services/UserService';
 import { userField } from '../validation/field';
-import { userValidation } from '../validation/validation';
+import { userValidation } from '../validation/validationParams';
 
 class UserController {
-  async index(req: Request, res: Response) {
+  async index(res: Response) {
     const users = await findAllUsers();
     return res.json(users);
   }
 
   async store(req: Request, res: Response) {
     const isParamValid = userValidation();
-    const isFieldValid = userField(req);
-
-    if (isFieldValid) {
-      return res.send(badRequest(new MissingParamError(isFieldValid)));
-    }
+    userField(req, res);
 
     try {
       const { fullName, cpf, email, password, amount } = isParamValid.parse(
