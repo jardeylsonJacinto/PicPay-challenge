@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { MissingParamError } from '../errors/missing-param-error';
 import { badRequest } from '../helpers/http-helper';
 
-export const userField = (req: Request, res: Response) => {
+export const userFieldValidation = (req: Request, res: Response) => {
   const requiredFields = ['fullName', 'cpf', 'email', 'password', 'amount'];
   for (const field of requiredFields) {
     if (field === 'amount') {

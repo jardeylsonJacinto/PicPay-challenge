@@ -4,8 +4,8 @@ import { InvalidParamError } from '../errors/invalid-param-error';
 import { badRequest } from '../helpers/http-helper';
 import { IUser } from '../models/User';
 import { findAllUsers, registerUser } from '../services/UserService';
-import { userField } from '../validation/field';
-import { userValidation } from '../validation/validationParams';
+import { userFieldValidation } from '../validation/fieldValidation';
+import { userValidation } from '../validation/paramValidation';
 
 class UserController {
   async index(res: Response) {
@@ -14,16 +14,12 @@ class UserController {
   }
 
   async store(req: Request, res: Response) {
-    const isParamValid = userValidation();
-    userField(req, res);
-
+    userFieldValidation(req, res);
+    const { fullName, cpf, email, password, amount } = userValidation().parse(
+      req.body
+    );
+    const user: IUser = { fullName, cpf, email, password, amount };
     try {
-      const { fullName, cpf, email, password, amount } = isParamValid.parse(
-        req.body
-      );
-
-      const user: IUser = { fullName, cpf, email, password, amount };
-
       const newUser = await registerUser(user);
       return res.status(200).json(newUser);
     } catch (error) {

@@ -5,8 +5,8 @@ import { MissingParamError } from '../errors/missing-param-error';
 import { badRequest } from '../helpers/http-helper';
 import { IMerchant } from '../models/Merchant';
 import { findAllMerchant, registerMerchant } from '../services/MerchantService';
-import { merchantField } from '../validation/field';
-import { merchantValidation } from '../validation/validationParams';
+import { merchantField } from '../validation/fieldValidation';
+import { merchantValidation } from '../validation/paramValidation';
 
 class UserController {
   async index(res: Response) {

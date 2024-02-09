@@ -4,11 +4,11 @@ import {
   createTransaction,
   findAllTransactions,
 } from '../services/TransactionService';
-import { transactionFieldValidation } from '../validation/field';
+import { transactionFieldValidation } from '../validation/fieldValidation';
 import {
   transactionParamsValidation,
   transactionValidation,
-} from '../validation/validationParams';
+} from '../validation/paramValidation';
 
 class TransactionController {
   async index(res: Response) {
