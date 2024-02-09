@@ -6,10 +6,10 @@ import { badRequest } from '../helpers/http-helper';
 import { IMerchant } from '../models/Merchant';
 import { findAllMerchant, registerMerchant } from '../services/MerchantService';
 import { merchantField } from '../validation/field';
-import { merchantValidation } from '../validation/validation';
+import { merchantValidation } from '../validation/validationParams';
 
 class UserController {
-  async index(req: Request, res: Response) {
+  async index(res: Response) {
     const merchants = await findAllMerchant();
     return res.json(merchants);
   }
@@ -27,7 +27,7 @@ class UserController {
       );
       const merchant: IMerchant = { fullName, cnpj, email, password, amount };
       const newMerchant = await registerMerchant(merchant);
-      return res.status(200).json(newMerchant);
+      return res.status(201).json(newMerchant);
     } catch (error) {
       if (error instanceof Error) {
         if (
