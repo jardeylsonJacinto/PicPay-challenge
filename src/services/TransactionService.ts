@@ -18,7 +18,7 @@ export const createTransaction = async (transaction: ITransaction) => {
   if (merchant) {
     throw new Error('logistas does not have transactions');
   }
-  
+
   if (!payer || payer.amount < value) {
     throw new Error('Payer does not have sufficient balance');
   }

@@ -8,7 +8,7 @@ import { merchantFieldValidation } from '../validation/fieldValidation';
 import { merchantParamValidation } from '../validation/paramValidation';
 
 class UserController {
-  async index(res: Response) {
+  async index(req: Request, res: Response) {
     const merchants = await findAllMerchant();
     return res.json(merchants);
   }
@@ -17,7 +17,7 @@ class UserController {
 
     const { fullName, cnpj, email, password, amount } =
       merchantParamValidation().parse(req.body);
-      
+
     const merchant: IMerchant = { fullName, cnpj, email, password, amount };
 
     try {

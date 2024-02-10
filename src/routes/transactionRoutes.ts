@@ -3,6 +3,6 @@ import TransactionController from '../controllers/TransactionController';
 
 const router = Router();
 router.get('/', TransactionController.index);
-router.post('/:id', TransactionController.store);
+router.post('/:userId', TransactionController.store);
 
 export default router;

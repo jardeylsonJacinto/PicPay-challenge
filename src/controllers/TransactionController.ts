@@ -11,7 +11,7 @@ import {
 } from '../validation/paramValidation';
 
 class TransactionController {
-  async index(res: Response) {
+  async index(req: Request, res: Response) {
     const transactions = await findAllTransactions();
     return res.json(transactions);
   }

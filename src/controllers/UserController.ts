@@ -8,7 +8,7 @@ import { userFieldValidation } from '../validation/fieldValidation';
 import { userParamValidation } from '../validation/paramValidation';
 
 class UserController {
-  async index(res: Response) {
+  async index(req: Request, res: Response) {
     const users = await findAllUsers();
     return res.json(users);
   }
