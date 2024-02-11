@@ -6,8 +6,8 @@ import {
 } from '../services/TransactionService';
 import { transactionFieldValidation } from '../validation/fieldValidation';
 import {
+  transactionBodyParamValidation,
   transactionParamsValidation,
-  transactionValidation,
 } from '../validation/paramValidation';
 
 class TransactionController {
@@ -18,19 +18,18 @@ class TransactionController {
   async store(req: Request, res: Response) {
     transactionFieldValidation(req, res);
     const { userId } = transactionParamsValidation().parse(req.params);
-    const { value, payerId, payeeId } = transactionValidation().parse(req.body);
+    const { payeeId, value } = transactionBodyParamValidation().parse(req.body);
     const transaction: ITransaction = {
       userId,
-      value,
-      payerId,
       payeeId,
+      value,
     };
 
     try {
       const newTransaction = await createTransaction(transaction);
       return res.status(200).json(newTransaction);
     } catch (error) {
-      console.log(error);
+      return res.status(400).json({ message: error });
     }
   }
 }
