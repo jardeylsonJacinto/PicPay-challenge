@@ -44,11 +44,8 @@ export const merchantParamValidation = () => {
   });
 };
 
-export const transactionValidation = () => {
+export const transactionBodyParamValidation = () => {
   return z.object({
-    payerId: z.string({
-      invalid_type_error: 'The payer Id has to be a string',
-    }),
     payeeId: z.string({
       invalid_type_error: 'The payee Id has to be a string',
     }),
