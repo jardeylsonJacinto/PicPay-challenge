@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
-import { MissingParamError } from '../errors/missing-param-error';
-import { badRequest } from '../helpers/http-helper';
 import { ITransaction } from '../models/Transaction';
 import {
   createTransaction,
   findAllTransactions,
 } from '../services/TransactionService';
+import { transactionFieldValidation } from '../validation/fieldValidation';
+import {
+  transactionBodyParamValidation,
+  transactionParamsValidation,
+} from '../validation/paramValidation';
 
 class TransactionController {
   async index(req: Request, res: Response) {
@@ -13,25 +16,20 @@ class TransactionController {
     return res.json(transactions);
   }
   async store(req: Request, res: Response) {
-    const requiredFields = ['userId', 'value', 'payerId', 'payeeId'];
-    for (const field of requiredFields) {
-      if (!req.body[field]) {
-        return res.send(badRequest(new MissingParamError(field)));
-      }
-    }
-    const { userId, value, payerId, payeeId } = req.body;
+    transactionFieldValidation(req, res);
+    const { userId } = transactionParamsValidation().parse(req.params);
+    const { payeeId, value } = transactionBodyParamValidation().parse(req.body);
     const transaction: ITransaction = {
       userId,
-      value,
-      payerId,
       payeeId,
+      value,
     };
 
     try {
       const newTransaction = await createTransaction(transaction);
       return res.status(200).json(newTransaction);
     } catch (error) {
-      console.log(error);
+      return res.status(400).json({ message: error });
     }
   }
 }

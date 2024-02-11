@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { InvalidParamError } from '../errors/invalid-param-error';
-import { MissingParamError } from '../errors/missing-param-error';
 import { badRequest } from '../helpers/http-helper';
 import { IUser } from '../models/User';
 import { findAllUsers, registerUser } from '../services/UserService';
-import { userField } from '../validation/field';
-import { userValidation } from '../validation/validation';
+import { userFieldValidation } from '../validation/fieldValidation';
+import { userParamValidation } from '../validation/paramValidation';
 
 class UserController {
   async index(req: Request, res: Response) {
@@ -15,22 +14,16 @@ class UserController {
   }
 
   async store(req: Request, res: Response) {
-    const isParamValid = userValidation();
-    const isFieldValid = userField(req);
+    userFieldValidation(req, res);
 
-    if (isFieldValid) {
-      return res.send(badRequest(new MissingParamError(isFieldValid)));
-    }
+    const { fullName, cpf, email, password, amount } =
+      userParamValidation().parse(req.body);
+
+    const user: IUser = { fullName, cpf, email, password, amount };
 
     try {
-      const { fullName, cpf, email, password, amount } = isParamValid.parse(
-        req.body
-      );
-
-      const user: IUser = { fullName, cpf, email, password, amount };
-
       const newUser = await registerUser(user);
-      return res.status(200).json(newUser);
+      return res.status(201).json(newUser);
     } catch (error) {
       if (error instanceof Error) {
         if (

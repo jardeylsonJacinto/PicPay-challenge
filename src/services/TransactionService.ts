@@ -7,40 +7,54 @@ export const findAllTransactions = async () => {
 };
 
 export const createTransaction = async (transaction: ITransaction) => {
-  const { userId, payerId, payeeId, value } = transaction;
-
-  const payer = await prisma.user.findUnique({ where: { cpf: payerId } });
-  const payee = await prisma.user.findUnique({ where: { cpf: payeeId } });
+  const { userId, payeeId, value } = transaction;
   const merchant = await prisma.merchant.findUnique({
-    where: { cnpj: payerId },
+    where: { id: userId },
   });
 
   if (merchant) {
-    throw new Error('logistas does not have transactions');
+    throw 'logistas does not have transactions';
   }
-  
+
+  const payer = await prisma.user.findUnique({ where: { id: userId } });
   if (!payer || payer.amount < value) {
-    throw new Error('Payer does not have sufficient balance');
+    throw 'Payer does not have sufficient balance';
   }
-  if (!payee) {
-    throw new Error('Payee does not exist');
+
+  const payee = await prisma.user.findUnique({ where: { cpf: payeeId } });
+  const payeeMerchant = await prisma.merchant.findUnique({
+    where: { cnpj: payeeId },
+  });
+
+  if (!payee && !payeeMerchant) {
+    throw 'Payee does not exist';
   }
+
   const newTransaction = await prisma.transaction.create({
     data: {
       userId: transaction.userId,
       value: transaction.value,
-      payer: transaction.payerId,
+      payer: payer.cpf,
       payee: transaction.payeeId,
     },
   });
 
   await prisma.user.update({
-    where: { cpf: payerId },
+    where: { cpf: payer.cpf },
     data: { amount: payer.amount - value },
   });
-  await prisma.user.update({
-    where: { cpf: payeeId },
-    data: { amount: payee.amount + value },
-  });
+
+  if (payee) {
+    await prisma.user.update({
+      where: { cpf: payeeId },
+      data: { amount: payee.amount + value },
+    });
+  } else if (payeeMerchant) {
+    await prisma.merchant.update({
+      where: { cnpj: payeeId },
+      data: { amount: payeeMerchant.amount + value },
+    });
+  }
+
   return newTransaction;
 };
