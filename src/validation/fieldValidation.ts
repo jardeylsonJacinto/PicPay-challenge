@@ -34,7 +34,7 @@ export const merchantFieldValidation = (req: Request, res: Response) => {
 };
 
 export const transactionFieldValidation = (req: Request, res: Response) => {
-  const requiredFields = ['value', 'payerId', 'payeeId'];
+  const requiredFields = ['value', 'payeeId'];
   for (const field of requiredFields) {
     if (field === 'value') {
       if (req.body[field] === undefined) {
