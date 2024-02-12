@@ -9,6 +9,7 @@ import {
   transactionBodyParamValidation,
   transactionParamsValidation,
 } from '../validation/paramValidation';
+import { authorizeTransaction } from '../middlewares/transactionAuth';
 
 class TransactionController {
   async index(req: Request, res: Response) {
@@ -24,6 +25,11 @@ class TransactionController {
       payeeId,
       value,
     };
+    const authorized = await authorizeTransaction();
+    if (!authorized) {
+      res.status(400).json({ error: 'Transaction not authorized' });
+      return;
+    }
 
     try {
       const newTransaction = await createTransaction(transaction);
